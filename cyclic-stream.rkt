@@ -210,6 +210,41 @@
                 '(3 1 2 3 1 2)))
 
 
+;; truncate : integer α-stream -> α-stream
+;;  If the given "truncation" is larger than the stream length,
+;;  effectively use `harmonic` to extend the period to a value greater
+;;  or equal to truncation.
+(define (truncate new-period str)
+  (define period (stream-period str))
+  (define replications (+ (quotient new-period period)
+                          (if (zero? (remainder new-period period))
+                              0
+                              1)))
+  (cond
+   [(list? str)
+    (take (apply append (for/list ([i (in-range replications)])
+                          str))
+          new-period)]
+   [else
+    (define new-str
+      (let loop ([str str])
+        (define elems (stream-take str (* replications period)))
+        (stream-append*
+         (take elems new-period)
+         (lambda () (loop (stream-tail str (* replications period)))))))
+    (cyclic-stream new-period
+                   new-str)]))
+
+(module+ test
+  (check-equal? (truncate 2 '(1 2 3))
+                '(1 2))
+  (check-equal? (truncate 4 '(1 2 3))
+                '(1 2 3 1))
+  (check-equal? (stream-take (truncate 7 1-2-3...)
+                             9)
+                '(1 2 3 1 2 3 1 1 2)))
+
+
 ;; randomize : α-stream -> α-stream
 (define (randomize str)
   (cond

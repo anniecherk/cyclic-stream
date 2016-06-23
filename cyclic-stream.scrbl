@@ -2,12 +2,6 @@
 @(require scribble/manual
           racket/list)
 
-@;{
- weighting in advance versus re-weight based on derived properties
- filter ?? [like random with replacement: period collapses to 1]
- constrain-order ?? [e.g., how much entry in resulting sequence?]
-}
-
 @(define (tuple . args)
    (list "<" (add-between args (list "," 'nbsp)) ">"))
 
@@ -34,11 +28,27 @@ is in a different order; the period is still @math{N}, because each
 chunk corresponds to using all of the factor's levels.
 
 @; ----------------------------------------
-@section{Weights, Harmonics, Rotations, and Randomizations}
+@section{Randomizations}
+
+We can @deftech{randomize} a stream of period @math{N} by taking each
+group of @math{N} elements, shuffling them, and adding the shuffled
+elements to a new stream. The period of the resulting stream is the
+same as the original.
+
+We can @deftech{randomize with replacement} from a stream of period
+@math{N} by taking each group of @math{N} elements, selecting just
+one, and adding the selected element new stream. The period of the
+resulting stream is 1. Although the period of the stream is infinite
+in the sense that it doesn't repeat a pattern, a choice of 1 for the
+period reflects the way that the new stream is drawn from an existing
+one, and it makes the stream cross in a useful way with other streams.
+
+@; ----------------------------------------
+@section{Weights, Harmonics, Rotations, and Truncations}
 
 Given a stream of period @math{N}, we can @deftech{weight} the stream
 by repeating each element @math{M} times to produce a stream of period
-@math{N*M}. For example, weighting by 3 a stream that produces @tt{A}
+@math{N·M}. For example, weighting by 3 a stream that produces @tt{A}
 and @tt{B} (so the period is 2) produces a stream with period 6:
 @tt{A}, @tt{A}, @tt{A}, @tt{B}, @tt{B}, @tt{B}. Randomizing this
 stream puts those six elements in random order, and then picks another
@@ -59,18 +69,12 @@ within the stream (so it's of no interest for a randomized stream). A
 rotation of a stream that repeats @tt{A}, @tt{B}, @tt{C} by 1 produces
 the repeating pattern @tt{B}, @tt{C}, @tt{A}.
 
-We can @deftech{randomize} a stream of period @math{N} by taking each
-group of @math{N} elements, shuffling them, and adding the shuffled
-elements to a new stream. The period of the resulting stream is the
-same as the original.
-
-We can @deftech{randomize with replacement} from a stream of period
-@math{N} by taking each group of @math{N} elements, selecting just
-one, and adding the selected element new stream. The period of the
-resulting stream is 1. Although the period of the stream is infinite
-in the sense that it doesn't repeat a pattern, a choice of 1 for the
-period reflects the way that the new stream is drawn from an existing
-one, and it makes the stream cross in a useful way with other streams.
+We can @deftech{truncate} a stream of period @math{N} to a smaller
+period @math{M} by discarding the last @math{N-M} elements of each
+group of @math{N}. For example, if we have a large list of words, we
+might want to randomize the group and only use a subset before we
+start over drawing from the full pool of words; truncating after
+randomizing achieves that effect.
 
 @; --------------------------------------------------
 @section{Sequences}
@@ -387,7 +391,7 @@ c   3.3 4.3  1.3 2.3
 }
 
 @; --------------------------------------------------
-@section{Balanced Randomization: Permutations and Flattening}
+@section{Permutations and Flattening}
 
 If we @tech{randomize} the stream @tt{A}--@tt{B}--@tt{C} and take the
 first six elements of the stream, we're likely to get two different
@@ -413,3 +417,17 @@ elements) back to a stream of period @math{N}. The flattened stream
 will have the same structure as a randomized version of the original
 stream, but it is guaranteed to be balanced in the sense of trying all
 possible ``random'' orders before repeating a ``random'' order.
+
+Note that @tech{flatten}ing a @tech{Latin Squares} combination would
+effectively result in a full crossing, but with a period that
+corresponds to a single diagonal instead of the full crossing's
+period.
+
+@; --------------------------------------------------
+
+@;{
+ weighting in advance versus re-weight based on derived properties
+ filter ?? [like random with replacement: period collapses to 1]
+ constrain-order ?? [e.g., how much entry in resulting sequence?]
+}
+

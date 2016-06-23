@@ -11,3 +11,5 @@ compiled/
 *.bak
 TAGS
 
+# Generated docs
+*.pdf
