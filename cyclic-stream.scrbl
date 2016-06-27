@@ -424,9 +424,46 @@ corresponds to a single diagonal instead of the full crossing's
 period.
 
 @; --------------------------------------------------
+@section{Toward Balance with Derived Factors}
 
-@;{
- weighting in advance versus re-weight based on derived properties
- filter ?? [like random with replacement: period collapses to 1]
- constrain-order ?? [e.g., how much entry in resulting sequence?]
-}
+Factors are normally represented by a list of literal values, but some
+properties relevant to an experiment might emerge from a combination
+of factors. For example, suppose that a sequence of words will be
+displayed, each in a particular font size. An experimenter might want
+to impose a distribution on text sizes as they appear on a screen,
+which depends on both the word's length and the font size.
+
+@margin-note{I may not be using the word ``balance'' correctly.}
+
+One way of implementing the distribution would be to generate all
+possible crossings, measure the sizes of the resulting word images,
+and then apply weights to each combination to achieve the desired
+distribution. Achieving the distribution without repeating words in a
+given experiment might involve throwing out some combinations rather
+than duplicating combinations. Meanwhile, the experimenter might like
+to balance the use of all words across subjects or across rounds for a
+single subject. These additional constraints suggests a
+``semi-randomization'' that orders combinations to achieve the desired
+distribution up to some number of trials; truncating the stream of
+trials at that point allows different combinations to enter the mix
+during the second period, which ensuring that each period has a target
+distribution.
+
+A further possibility is that the @emph{change} in text size from one
+trial to the next is relevant, and an experimenter might want a given
+distribution on size changes. Generating all possible orderings of
+size--word combinations quickly becomes intractable with enough word
+choices. An alternative is to guard the generation of elements from a
+stream to reorder the events. (In contrast to filtering, reordering
+preserves the period of a stream, and it can be combined with
+truncation to produce a stream with a shorter period but still some
+relation to the original stream.)
+
+Reorderings could be implemented by a generalization of @tt{randomize}
+replacing the implicit @tt{shuffle} function with an explicitly
+selected reordering function (possibly even stateful, to implement
+cross-period constraints). The question then is how to ensure that the
+function implements the intended distribution. The function might be
+expressed in a constrained language to guarantee a particular
+distribution, or the distribution might be checked ``dynamically'' by
+generating and analyzing sample sequences.
