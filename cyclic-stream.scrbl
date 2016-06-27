@@ -411,12 +411,12 @@ elements). Randomizing the permutations then picks a random order for
 the permutations, while ensuring that every permutation is covered by
 each group of @math{N!} streams.
 
-Finally, a @deftech{flatten} operation can convert the randomly
-ordered stream of @math{N!} permutations (each containing @math{N}
-elements) back to a stream of period @math{N}. The flattened stream
-will have the same structure as a randomized version of the original
-stream, but it is guaranteed to be balanced in the sense of trying all
-possible ``random'' orders before repeating a ``random'' order.
+A @deftech{flatten} operation can convert the randomly ordered stream
+of @math{N!} permutations (each containing @math{N} elements) back to
+a stream of period @math{N}. The flattened stream will have the same
+structure as a randomized version of the original stream, but it is
+guaranteed to be balanced in the sense of trying all possible
+``random'' orders before repeating a ``random'' order.
 
 Note that @tech{flatten}ing a @tech{Latin Squares} combination would
 effectively result in a full crossing, but with a period that
@@ -430,4 +430,3 @@ period.
  filter ?? [like random with replacement: period collapses to 1]
  constrain-order ?? [e.g., how much entry in resulting sequence?]
 }
-
